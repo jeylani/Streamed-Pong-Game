@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Sockets Example</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/addons/p5.dom.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/addons/p5.sound.js"></script>
+    <script type="text/javascript" src="sketch.js"></script>
+    <script>
+        var socket;
+
+        function setup() {
+            createCanvas(400, 400);
+            background(0);
+            // Start a socket connection to the server
+            // Some day we would run this server somewhere else
+            socket = new WebSocket("ws://localhost:1337");
+            // We make a named event called 'mouse' and write an
+            // anonymous callback function
+            socket.onopen = function (event) {
+            socket.send("Voici un texte que le serveur attend de recevoir dès que possible !"); 
+
+                socket.onmessage = function (event) {
+                    console.log(event.data);
+                    var data = event.data.split(",");
+                    var paddle_x = data[0];
+                    var balle_x = data[1];
+                    var balle_y = data[2];
+
+                   
+                    // Draw a blue circle
+                    background(0);
+                    color(255);
+                    fill(255,0,0);
+                    noStroke();
+                    ellipse(balle_x, balle_y, 20, 20);
+
+                    fill(255);
+                    rect(paddle_x, 380, 80, 20);
+                }
+            };
+        }
+
+        function draw() {
+        // Nothing
+        }
+    </script>
+    <style>
+      body {
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+  </body>
+</html>
